@@ -1,38 +1,37 @@
-# vue-composer
+# Frontend app (Vue.js)
 
-This template should help get you started developing with Vue 3 in Vite.
+This is the frontend part of the app, build with Vue 3 (Vite).
 
-## Recommended IDE Setup
+## Requirements
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Before you begin make sure you have the following installed:
 
-## Recommended Browser Setup
+- Git
+- Docker and Docker Compose
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+> **Important:** For the frontend to work, you have to have backend project running. See: `https://github.com/Sawczuk24427/laravel-api-docker`
 
-## Customize configuration
+## How to setup project locally
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+**1. Clone Git repository onto your disc:**
+`git clone https://github.com/Sawczuk24427/vue-frontend-docker`
 
-## Project Setup
+**2. Go into the project directory:**
+`cd vue-frontend-docker`
 
-```sh
-npm install
-```
+**3. Backend communication**
+Make sure your local backend works on the same port specified in `src/axios.js`
 
-### Compile and Hot-Reload for Development
+**4. Launch Docker container:**
+`docker compose up -d`
 
-```sh
-npm run dev
-```
+**5. Install all NPM packages:**
+`docker compose exec node npm install`
 
-### Compile and Minify for Production
+**6. Run development server (Vite):**
+`docker compose exec node npm run dev`
 
-```sh
-npm run build
-```
+## App accesss
+
+After succesfully launching the server, it will be accessible in your browser under:
+**http://localhost:5173**
