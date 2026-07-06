@@ -24,24 +24,25 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="login-container">
-    <h2>Sign In</h2>
-    <form @submit.prevent="handleLogin" class="login-form">
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" v-model="email" required />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" v-model="password" required />
-      </div>
+  <div class="d-flex justify-center">
+    <v-card class="pa-20 w-100" variant="outlined" max-width="400">
+      <v-card-title class="px-30 font-weight-bold"> Sign In</v-card-title>
+      <v-form v-model="form" @submit.prevent="handleLogin" class="pa-5 display-flex ga-15">
+        <v-text-field v-model="email" type="email" label="Email" density="compact"></v-text-field>
+        <v-text-field
+          v-model="password"
+          type="password"
+          label="Password"
+          density="compact"
+        ></v-text-field>
 
-      <button type="submit" class="submit-btn">Log in</button>
-    </form>
+        <v-btn type="submit" color="white" class="mt-10 pa-10 cursor: pointer">Log in</v-btn>
+      </v-form>
 
-    <p v-if="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </p>
+      <p v-if="errorMessage" class="text-error mt-20 pa-5 font-weight-bold">
+        {{ errorMessage }}
+      </p>
+    </v-card>
   </div>
 </template>
 
