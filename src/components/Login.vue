@@ -17,66 +17,55 @@ const handleLogin = async () => {
       password: password.value,
     })
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || 'Something went wrong'
+    errorMessage.value = 'Invalid email or password'
     console.error(error)
   }
 }
 </script>
 
 <template>
-  <div class="login-container">
-    <h2>Sign In</h2>
-    <form @submit.prevent="handleLogin" class="login-form">
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" v-model="email" required />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" v-model="password" required />
-      </div>
+  <div class="d-flex justify-center pt-10">
+    <v-card class="w-100 pa-5" variant="elevated" max-width="500" height="450" color="#fff">
+      <v-card-title class="text-headline-large font-weight-bold text-center pt-2 pb-5">
+        Sign in</v-card-title
+      >
+      <v-form v-model="form" @submit.prevent="handleLogin" class="display-flex">
+        <v-text-field v-model="email" type="email" label="Email" density="compact"></v-text-field>
+        <v-text-field
+          v-model="password"
+          type="password"
+          label="Password"
+          density="compact"
+        ></v-text-field>
+        <p :class="{ invisible: !errorMessage }" class="text-error font-weight-bold mt-0 mb-12">
+          {{ errorMessage || '\u00A0' }}
+        </p>
 
-      <button type="submit" class="submit-btn">Log in</button>
-    </form>
-
-    <p v-if="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </p>
+        <v-btn type="submit" color="gray" class="mb-4 cursor: pointer w-100 font-weight-bold"
+          >Log in</v-btn
+        >
+      </v-form>
+      <v-divider class="border-opacity-75" :thickness="2"
+        ><span class="font-weight-bold">Or</span></v-divider
+      >
+      <v-btn color="gray" class="mt-4 cursor: pointer w-100 font-weight-bold"
+        >Create an account</v-btn
+      >
+    </v-card>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.login-container {
-  padding: 20px;
-  margin: 0 auto;
-  max-width: 400px;
+.separator {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid #fff;
+  line-height: 0.1em;
+  margin: 10px 0 20px;
+}
 
-  .login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-
-    label {
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-  }
-
-  .submit-btn {
-    margin-top: 10px;
-    padding: 10px;
-    cursor: pointer;
-  }
-
-  .error-message {
-    color: red;
-    margin-top: 20px;
-    font-weight: bold;
-  }
+.separator span {
+  background: #fff;
+  padding: 0 10px;
 }
 </style>
