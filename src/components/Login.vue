@@ -17,7 +17,7 @@ const handleLogin = async () => {
       password: password.value,
     })
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || 'Something went wrong'
+    errorMessage.value = 'Invalid email or password'
     console.error(error)
   }
 }
@@ -25,7 +25,7 @@ const handleLogin = async () => {
 
 <template>
   <div class="d-flex justify-center pt-10">
-    <v-card class="w-100 pa-5" variant="outlined" max-width="500" height="450">
+    <v-card class="w-100 pa-5" variant="elevated" max-width="500" height="450" color="#fff">
       <v-card-title class="text-headline-large font-weight-bold text-center pt-2 pb-5">
         Sign in</v-card-title
       >
@@ -41,14 +41,14 @@ const handleLogin = async () => {
           {{ errorMessage || '\u00A0' }}
         </p>
 
-        <v-btn type="submit" color="white" class="mb-4 cursor: pointer w-100 font-weight-bold"
+        <v-btn type="submit" color="gray" class="mb-4 cursor: pointer w-100 font-weight-bold"
           >Log in</v-btn
         >
       </v-form>
       <v-divider class="border-opacity-75" :thickness="2"
         ><span class="font-weight-bold">Or</span></v-divider
       >
-      <v-btn color="white" class="mt-4 cursor: pointer w-100 font-weight-bold"
+      <v-btn color="gray" class="mt-4 cursor: pointer w-100 font-weight-bold"
         >Create an account</v-btn
       >
     </v-card>
