@@ -1,16 +1,19 @@
 <script setup>
 import { ref } from 'vue'
-import LoginForm from './components/Login.vue'
-import RegistrationForm from './components/Registration.vue'
+import LoginForm from './components/LoginForm.vue'
+import RegistrationForm from './components/RegistrationForm.vue'
 
-const currentView = ref('login')
+const currentView = ref('loginForm')
 </script>
 
 <template>
   <v-app class="app-background">
     <v-main>
-      <LoginForm v-if="currentView === 'login'" @register="currentView = 'register'" />
-      <RegistrationForm v-if="currentView === 'register'"></RegistrationForm>
+      <LoginForm v-if="currentView === 'loginForm'" @registerForm="currentView = 'registerForm'" />
+      <RegistrationForm
+        v-if="currentView === 'registerForm'"
+        @login-form="currentView = 'loginForm'"
+      ></RegistrationForm>
     </v-main>
   </v-app>
 </template>

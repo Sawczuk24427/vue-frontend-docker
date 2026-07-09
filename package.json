@@ -10,6 +10,7 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "axios": "^1.18.1",
     "pinia": "^3.0.4",
     "vite-plugin-vuetify": "^2.1.3",
