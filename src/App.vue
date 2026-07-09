@@ -12,7 +12,7 @@ const currentView = ref('loginForm')
       <LoginForm v-if="currentView === 'loginForm'" @registerForm="currentView = 'registerForm'" />
       <RegistrationForm
         v-if="currentView === 'registerForm'"
-        @login-form="currentView = 'loginForm'"
+        @loginForm="currentView = 'loginForm'"
       ></RegistrationForm>
     </v-main>
   </v-app>
