@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import axios from '@/axios'
 
+defineEmits(['registerForm'])
+
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
@@ -48,7 +50,10 @@ const handleLogin = async () => {
       <v-divider class="border-opacity-75" :thickness="2"
         ><span class="font-weight-bold">Or</span></v-divider
       >
-      <v-btn color="gray" class="mt-4 cursor: pointer w-100 font-weight-bold"
+      <v-btn
+        color="gray"
+        class="mt-4 cursor: pointer w-100 font-weight-bold"
+        @click="$emit('registerForm')"
         >Create an account</v-btn
       >
     </v-card>
