@@ -1,30 +1,52 @@
 <script setup>
 import { ref } from 'vue'
+import { reactive } from 'vue'
 
 const emit = defineEmits(['loginForm'])
 
-const step = ref(1)
-const name = ref('')
-const email = ref('')
-const password = ref('')
-const confPassword = ref('')
-const errorMessage = ref('')
+const form = reactive({
+  name: '',
+  email: '',
+  password: '',
+  confPassword: '',
+})
 
+const error = reactive({
+  name: '',
+  email: '',
+  password: '',
+  confPassword: '',
+})
+const step = ref(1)
 function validateField() {
-  errorMessage.value = ''
+  for (const key in error) {
+    error[key] = ''
+  }
   let isValid = true
-  if (step.value === 1 && name.value.trim() === '') {
-    errorMessage.value = 'Field cannot be empty'
+  if (step.value === 1 && form.name.trim() === '') {
+    error.name = 'Field cannot be empty'
     isValid = false
-  } else if (step.value === 2 && email.value.trim() === '') {
-    errorMessage.value = 'Field cannot be empty'
-    isValid = false
-  } else if (step.value === 3 && password.value.trim() === '') {
-    errorMessage.value = 'Field cannot be empty'
-    isValid = false
-  } else if (step.value === 3 && password.value !== confPassword.value) {
-    errorMessage.value = 'Passwords do not match'
-    isValid = false
+  } else if (step.value === 2) {
+    if (form.email.trim() === '') {
+      error.email = 'Field cannot be empty'
+      isValid = false
+    } else {
+      const re = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+      if (!re.test(form.email)) {
+        error.email = 'Invalid email address'
+        isValid = false
+      }
+    }
+  } else if (step.value === 3) {
+    if (form.password.trim() === '') {
+      error.password = 'Field cannot be empty'
+      isValid = false
+    }
+
+    if (form.password !== form.confPassword) {
+      error.confPassword = 'Passwords do not match'
+      isValid = false
+    }
   }
   return isValid
 }
@@ -53,7 +75,7 @@ function handleRegister() {
       variant="elevated"
       max-width="500"
       height="450"
-      color="#fff"
+      color="white"
     >
       <div class="d-flex">
         <h1 class="ma-0">Create account</h1>
@@ -75,20 +97,32 @@ function handleRegister() {
         <v-stepper-window class="flex-grow-1 pt-4">
           <v-form>
             <v-stepper-window-item :value="1"
-              ><v-text-field v-model="name" label="User Name"></v-text-field
+              ><v-text-field
+                v-model="form.name"
+                :error-messages="error.name"
+                label="Username"
+              ></v-text-field
             ></v-stepper-window-item>
             <v-stepper-window-item :value="2">
-              <v-text-field v-model="email" label="Email" type="email"></v-text-field>
+              <v-text-field
+                v-model="form.email"
+                :error-messages="error.email"
+                label="Email"
+                type="email"
+              ></v-text-field>
             </v-stepper-window-item>
             <v-stepper-window-item :value="3">
               <v-text-field
-                v-model="password"
+                v-model="form.password"
+                :error-messages="error.password"
                 type="password"
                 label="Password"
                 autocomplete="off"
+                class="pb-4"
               ></v-text-field>
               <v-text-field
-                v-model="confPassword"
+                v-model="form.confPassword"
+                :error-messages="error.confPassword"
                 type="password"
                 label="Confirm password"
                 autocomplete="off"
@@ -96,7 +130,7 @@ function handleRegister() {
             </v-stepper-window-item>
           </v-form>
         </v-stepper-window>
-        <div class="d-flex justify-space-between">
+        <div class="d-flex justify-space-between pb-3">
           <v-btn @click="step--" v-if="step != 1">Previous</v-btn>
           <v-spacer />
           <v-btn v-if="step < 3" @click="handleNext()">Next</v-btn>
@@ -106,3 +140,9 @@ function handleRegister() {
     </v-card>
   </div>
 </template>
+
+<style lang="scss" scoped>
+:deep(.v-messages__message) {
+  font-size: 16px;
+}
+</style>
