@@ -131,10 +131,12 @@ function handleRegister() {
           </v-form>
         </v-stepper-window>
         <div class="d-flex justify-space-between pb-3">
-          <v-btn @click="step--" v-if="step != 1">Previous</v-btn>
+          <v-btn @click="step--" v-if="step != 1" class="w-10 font-weight-bold">Back</v-btn>
           <v-spacer />
-          <v-btn v-if="step < 3" @click="handleNext()">Next</v-btn>
-          <v-btn v-else @click="handleNext()">Create</v-btn>
+          <v-btn v-if="step < 3" @click="handleNext()" class="w-20 font-weight-bold">Next</v-btn>
+          <v-btn v-else @click="handleNext()" color="success" class="w-10 font-weight-bold"
+            >Create</v-btn
+          >
         </div>
       </v-stepper>
     </v-card>
