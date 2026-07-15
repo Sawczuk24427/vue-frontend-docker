@@ -24,7 +24,7 @@ function showLogin(registeredEmail) {
     <v-main>
       <Transition :name="transitionDirection" mode="out-in">
         <LoginForm v-if="currentView === 'loginForm'" @registerForm="showRegister" :email="email" />
-        <RegistrationForm v-else @loginForm="showLogin(email)"></RegistrationForm>
+        <RegistrationForm v-else @loginForm="showLogin"></RegistrationForm>
       </Transition>
     </v-main>
   </v-app>

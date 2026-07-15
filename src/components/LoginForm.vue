@@ -6,7 +6,7 @@ defineEmits(['registerForm'])
 const props = defineProps({
   email: String,
 })
-const email = ref(props.email)
+const email = ref(props.email || '')
 const password = ref('')
 const errorMessage = ref('')
 
