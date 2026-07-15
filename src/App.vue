@@ -5,13 +5,15 @@ import RegistrationForm from './components/RegistrationForm.vue'
 
 const currentView = ref('loginForm')
 const transitionDirection = ref('slide-left')
+const email = ref('')
 
 function showRegister() {
   currentView.value = 'registerForm'
   transitionDirection.value = 'slide-left'
 }
 
-function showLogin() {
+function showLogin(registeredEmail) {
+  email.value = registeredEmail
   currentView.value = 'loginForm'
   transitionDirection.value = 'slide-right'
 }
@@ -21,8 +23,8 @@ function showLogin() {
   <v-app class="app-background">
     <v-main>
       <Transition :name="transitionDirection" mode="out-in">
-        <LoginForm v-if="currentView === 'loginForm'" @registerForm="showRegister()" />
-        <RegistrationForm v-else @loginForm="showLogin()"></RegistrationForm>
+        <LoginForm v-if="currentView === 'loginForm'" @registerForm="showRegister" :email="email" />
+        <RegistrationForm v-else @loginForm="showLogin(email)"></RegistrationForm>
       </Transition>
     </v-main>
   </v-app>
