@@ -3,8 +3,10 @@ import { ref } from 'vue'
 import axios from '@/axios'
 
 defineEmits(['registerForm'])
-
-const email = ref('')
+const props = defineProps({
+  email: String,
+})
+const email = ref(props.email || '')
 const password = ref('')
 const errorMessage = ref('')
 
@@ -14,7 +16,7 @@ const handleLogin = async () => {
 
     await axios.get('/sanctum/csrf-cookie')
 
-    const response = await axios.post('/login', {
+    const response = await axios.post('/auth/login', {
       email: email.value,
       password: password.value,
     })

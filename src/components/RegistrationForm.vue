@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { reactive } from 'vue'
+import axios from '@/axios'
 
 const emit = defineEmits(['loginForm'])
 
@@ -51,7 +52,7 @@ function validateField() {
   return isValid
 }
 
-function handleNext() {
+const handleNext = async () => {
   if (!validateField()) {
     return
   }
@@ -59,12 +60,38 @@ function handleNext() {
     step.value++
     return
   } else if (step.value === 3) {
-    handleRegister()
+    const registered = await handleRegister()
+    if (registered) {
+      emit('loginForm', form.email)
+    }
   }
 }
 
-function handleRegister() {
-  emit('loginForm')
+const handleRegister = async () => {
+  try {
+    await axios.get('/sanctum/csrf-cookie')
+
+    const response = await axios.post('/auth/register', {
+      name: form.name,
+      email: form.email,
+      password: form.password,
+    })
+    return response.data
+  } catch (error) {
+    if (error.response?.status === 422) {
+      const errors = error.response.data.errors
+      if (errors.name) {
+        step.value = 1
+        error.name = errors.name[0]
+      } else if (errors.email) {
+        step.value = 2
+        error.email = errors.email[0]
+      }
+    } else {
+      console.error(error)
+    }
+    return null
+  }
 }
 </script>
 
