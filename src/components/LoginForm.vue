@@ -1,14 +1,16 @@
 <script setup>
 import { ref } from 'vue'
 import axios from '@/axios'
+import { useUserStore } from '@/stores/user'
 
-defineEmits(['registerForm'])
+const emit = defineEmits(['registerForm', 'dashboard'])
 const props = defineProps({
   email: String,
 })
 const email = ref(props.email || '')
 const password = ref('')
 const errorMessage = ref('')
+const userStore = useUserStore()
 
 const handleLogin = async () => {
   try {
@@ -20,6 +22,10 @@ const handleLogin = async () => {
       email: email.value,
       password: password.value,
     })
+
+    userStore.setUser(response.data.data)
+
+    emit('dashboard')
   } catch (error) {
     errorMessage.value = 'Invalid email or password'
     console.error(error)
@@ -55,7 +61,7 @@ const handleLogin = async () => {
       <v-btn
         color="gray"
         class="mt-4 cursor: pointer w-100 font-weight-bold"
-        @click="$emit('registerForm')"
+        @click="emit('registerForm')"
         >Create an account</v-btn
       >
     </v-card>

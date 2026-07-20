@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import LoginForm from './components/LoginForm.vue'
 import RegistrationForm from './components/RegistrationForm.vue'
+import Dashboard from './components/Dashboard.vue'
 
 const currentView = ref('loginForm')
 const transitionDirection = ref('slide-left')
@@ -23,8 +24,14 @@ function showLogin(registeredEmail) {
   <v-app class="app-background">
     <v-main>
       <Transition :name="transitionDirection" mode="out-in">
-        <LoginForm v-if="currentView === 'loginForm'" @registerForm="showRegister" :email="email" />
-        <RegistrationForm v-else @loginForm="showLogin"></RegistrationForm>
+        <LoginForm
+          v-if="currentView === 'loginForm'"
+          @registerForm="showRegister"
+          @dashboard="currentView = 'dashboard'"
+          :email="email"
+        />
+        <RegistrationForm v-else-if="currentView === 'registerForm'" @loginForm="showLogin" />
+        <Dashboard v-else-if="currentView === 'dashboard'" @loginForm="showLogin" />
       </Transition>
     </v-main>
   </v-app>
