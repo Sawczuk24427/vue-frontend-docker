@@ -62,6 +62,7 @@ const onLogin = handleSubmit(async (values) => {
           label="Email"
           density="compact"
           :error-messages="errors.email"
+          class="pb-4"
         ></v-text-field>
         <v-text-field
           v-model="password"
@@ -103,5 +104,9 @@ const onLogin = handleSubmit(async (values) => {
 .separator span {
   background: #fff;
   padding: 0 10px;
+}
+
+:deep(.v-messages__message) {
+  font-size: 16px;
 }
 </style>
