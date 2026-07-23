@@ -1,69 +1,57 @@
 <script setup>
-import { ref } from 'vue'
-import { reactive } from 'vue'
+import { ref, computed } from 'vue'
+
 import axios from '@/axios'
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
 
 const emit = defineEmits(['loginForm'])
-
-const form = reactive({
-  name: '',
-  email: '',
-  password: '',
-  confPassword: '',
-})
-
-const error = reactive({
-  name: '',
-  email: '',
-  password: '',
-  confPassword: '',
-})
 const step = ref(1)
-function validateField() {
-  for (const key in error) {
-    error[key] = ''
-  }
-  let isValid = true
-  if (step.value === 1 && form.name.trim() === '') {
-    error.name = 'Field cannot be empty'
-    isValid = false
-  } else if (step.value === 2) {
-    if (form.email.trim() === '') {
-      error.email = 'Field cannot be empty'
-      isValid = false
-    } else {
-      const re = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
-      if (!re.test(form.email)) {
-        error.email = 'Invalid email address'
-        isValid = false
-      }
-    }
-  } else if (step.value === 3) {
-    if (form.password.trim() === '') {
-      error.password = 'Field cannot be empty'
-      isValid = false
-    }
 
-    if (form.password !== form.confPassword) {
-      error.confPassword = 'Passwords do not match'
-      isValid = false
-    }
-  }
-  return isValid
+const { defineField, errors, validateField, validate } = useForm({
+  validationSchema: yup.object({
+    name: yup.string().required('Name cannot be empty'),
+    email: yup.string().email('Invalid Email').required('Email cannot be empty'),
+    password: yup.string().required('Password cannot be empty'),
+    confirmPassword: yup
+      .string()
+      .required('Please confirm password')
+      .oneOf([yup.ref('password')], 'Passwords do not match'),
+  }),
+})
+
+const [name] = defineField('name')
+const [email, emailAttrs] = defineField('email', { validateOnModelUpdate: false })
+const [password] = defineField('password')
+const [confirmPassword, confPassAttrs] = defineField('confirmPassword', {
+  validateOnModelUpdate: false,
+})
+
+const stepFields = {
+  1: ['name'],
+  2: ['email'],
+  3: ['password', 'confirmPassword'],
+}
+
+const validateStep = async () => {
+  const fields = stepFields[step.value]
+  const results = await Promise.all(fields.map((field) => validateField(field)))
+
+  return results.every((result) => result.valid)
 }
 
 const handleNext = async () => {
-  if (!validateField()) {
+  const isValid = await validateStep()
+  if (!isValid) {
     return
   }
   if (step.value < 3) {
     step.value++
     return
-  } else if (step.value === 3) {
-    const registered = await handleRegister()
-    if (registered) {
-      emit('loginForm', form.email)
-    }
+  }
+  const registered = await handleRegister()
+  if (registered) {
+    emit('loginForm', email.value)
   }
 }
 
@@ -72,9 +60,9 @@ const handleRegister = async () => {
     await axios.get('/sanctum/csrf-cookie')
 
     const response = await axios.post('/auth/register', {
-      name: form.name,
-      email: form.email,
-      password: form.password,
+      name: name.value,
+      email: email.value,
+      password: password.value,
     })
     return response.data
   } catch (error) {
@@ -122,40 +110,42 @@ const handleRegister = async () => {
           <v-stepper-item :value="3" title="Password" />
         </v-stepper-header>
         <v-stepper-window class="flex-grow-1 pt-4">
-          <v-form>
+          <div>
             <v-stepper-window-item :value="1"
               ><v-text-field
-                v-model="form.name"
-                :error-messages="error.name"
+                v-model="name"
+                :error-messages="errors.name"
                 label="Username"
               ></v-text-field
             ></v-stepper-window-item>
             <v-stepper-window-item :value="2">
               <v-text-field
-                v-model="form.email"
-                :error-messages="error.email"
+                v-model="email"
+                v-bind="emailAttrs"
+                :error-messages="errors.email"
                 label="Email"
                 type="email"
               ></v-text-field>
             </v-stepper-window-item>
             <v-stepper-window-item :value="3">
               <v-text-field
-                v-model="form.password"
-                :error-messages="error.password"
+                v-model="password"
+                :error-messages="errors.password"
                 type="password"
                 label="Password"
                 autocomplete="off"
                 class="pb-4"
               ></v-text-field>
               <v-text-field
-                v-model="form.confPassword"
-                :error-messages="error.confPassword"
+                v-model="confirmPassword"
+                v-bind="confPassAttrs"
+                :error-messages="errors.confirmPassword"
                 type="password"
                 label="Confirm password"
                 autocomplete="off"
               ></v-text-field>
             </v-stepper-window-item>
-          </v-form>
+          </div>
         </v-stepper-window>
         <div class="d-flex justify-space-between pb-3">
           <v-btn @click="step--" v-if="step != 1" class="w-10 font-weight-bold">Back</v-btn>
