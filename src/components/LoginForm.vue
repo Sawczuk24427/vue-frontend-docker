@@ -2,17 +2,32 @@
 import { ref } from 'vue'
 import axios from '@/axios'
 import { useUserStore } from '@/stores/user'
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
 
 const emit = defineEmits(['registerForm', 'dashboard'])
 const props = defineProps({
   email: String,
 })
-const email = ref(props.email || '')
-const password = ref('')
+
+const schema = yup.object({
+  email: yup.string().email('Invalid email').required('Field cannot be empty'),
+  password: yup.string().required('Field cannot be empty'),
+})
+
+const { defineField, errors, handleSubmit } = useForm({
+  validationSchema: schema,
+  initialValues: {
+    email: props.email || '',
+    password: '',
+  },
+})
+const [email, emailAttrs] = defineField('email', { validateOnModelUpdate: false })
+const [password] = defineField('password')
 const errorMessage = ref('')
 const userStore = useUserStore()
 
-const handleLogin = async () => {
+const onLogin = handleSubmit(async (values) => {
   try {
     errorMessage.value = ''
 
@@ -30,7 +45,7 @@ const handleLogin = async () => {
     errorMessage.value = 'Invalid email or password'
     console.error(error)
   }
-}
+})
 </script>
 
 <template>
@@ -39,13 +54,22 @@ const handleLogin = async () => {
       <v-card-title class="text-headline-large font-weight-bold text-center pt-2 pb-5">
         Sign in</v-card-title
       >
-      <v-form v-model="form" @submit.prevent="handleLogin" class="display-flex">
-        <v-text-field v-model="email" type="email" label="Email" density="compact"></v-text-field>
+      <v-form v-model="form" @submit.prevent="onLogin" class="display-flex">
+        <v-text-field
+          v-model="email"
+          v-bind="emailAttrs"
+          type="email"
+          label="Email"
+          density="compact"
+          :error-messages="errors.email"
+          class="pb-4"
+        ></v-text-field>
         <v-text-field
           v-model="password"
           type="password"
           label="Password"
           density="compact"
+          :error-messages="errors.password"
         ></v-text-field>
         <p :class="{ invisible: !errorMessage }" class="text-error font-weight-bold mt-0 mb-12">
           {{ errorMessage || '\u00A0' }}
@@ -80,5 +104,9 @@ const handleLogin = async () => {
 .separator span {
   background: #fff;
   padding: 0 10px;
+}
+
+:deep(.v-messages__message) {
+  font-size: 16px;
 }
 </style>
